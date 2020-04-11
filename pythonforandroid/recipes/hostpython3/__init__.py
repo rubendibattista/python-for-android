@@ -82,21 +82,11 @@ class Hostpython3Recipe(Recipe):
         build_dir = join(recipe_build_dir, self.build_subdir)
         ensure_dir(build_dir)
 
-        # ... And add that dir into the include flags
-        env = os.environ
-        cppflags = f" -I{build_dir}"
-
-        try:
-            env["CPPFLAGS"] += cppflags
-        except KeyError:
-            env["CPPFLAGS"] = cppflags
-
         with current_directory(recipe_build_dir):
             # Configure the build
             with current_directory(build_dir):
                 if not exists('config.status'):
-                    shprint(sh.Command(join(recipe_build_dir, 'configure')),
-                            _env=env)
+                    shprint(sh.Command(join(recipe_build_dir, 'configure')))
 
             # Create the Setup file. This copying from Setup.dist is
             # the normal and expected procedure before Python 3.8, but
@@ -112,8 +102,13 @@ class Hostpython3Recipe(Recipe):
                     raise BuildInterruptingException(
                         "Could not find Setup.dist or Setup in Python build")
 
+            # There's something nasty in the environment that messes up somehow
+            # with the generation of the variables INCLUDEPY and CONFINCLUDEPY
+            # env variables, leading to a wrong detection of `pyconfig.h`
+            # Isolating only to CPPFLAGS it's an hack, but works
+            _env = {"CPPFLAGS": f" -I{build_dir}"}
             shprint(sh.make, '-j', str(cpu_count()), '-C', build_dir,
-                    _env=env)
+                    _env=_env)
 
             # make a copy of the python executable giving it the name we want,
             # because we got different python's executable names depending on
