@@ -32,6 +32,7 @@ class Arch:
         '-D__ANDROID_API__={ctx.ndk_api}',
         '-I{ctx.ndk_dir}/sysroot/usr/include/{command_prefix}',
         '-I{python_includes}',
+        '-fPIC',
     ]
 
     common_ldflags = ['-L{ctx_libs_dir}']
@@ -259,7 +260,6 @@ class ArchARMv7_a(ArchARM):
         '-mfloat-abi=softfp',
         '-mfpu=vfp',
         '-mthumb',
-        '-fPIC',
     ]
 
 
@@ -288,7 +288,6 @@ class Archx86_64(Arch):
         '-mpopcnt',
         '-m64',
         '-mtune=intel',
-        '-fPIC',
     ]
 
 
