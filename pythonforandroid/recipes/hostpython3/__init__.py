@@ -95,7 +95,8 @@ class Hostpython3Recipe(Recipe):
             # Configure the build
             with current_directory(build_dir):
                 if not exists('config.status'):
-                    shprint(sh.Command(join(recipe_build_dir, 'configure')))
+                    shprint(sh.Command(join(recipe_build_dir, 'configure')),
+                            _env=env)
 
             # Create the Setup file. This copying from Setup.dist is
             # the normal and expected procedure before Python 3.8, but

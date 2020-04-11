@@ -19,7 +19,10 @@ class Arch:
     arch = ""
     '''Name of the arch such as: `armeabi-v7a`, `arm64-v8a`, `x86`...'''
 
-    arch_cflags = []
+    arch_cflags = [
+        '-fPIC'
+    ]
+
     '''Specific arch `cflags`, expect to be overwrote in subclass if needed.'''
 
     common_cflags = [
@@ -32,7 +35,6 @@ class Arch:
         '-D__ANDROID_API__={ctx.ndk_api}',
         '-I{ctx.ndk_dir}/sysroot/usr/include/{command_prefix}',
         '-I{python_includes}',
-        '-fPIC',
     ]
 
     common_ldflags = ['-L{ctx_libs_dir}']
